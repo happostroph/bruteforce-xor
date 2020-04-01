@@ -50,6 +50,17 @@ def verifDico(text_decrypt):
     dico.close()
     return False
 
+def tryDecrypt(cipher_file, key = b'diidju'):
+    try:
+        with open(cipher_file, 'rb') as encrypt:
+            cipher_text = encrypt.read()
+            text = xor(cipher_text, key)
+            text = text.decode(encoding="ansi")
+            encrypt.close()
+            return text
+    except:
+        print(colors.FAIL + "[-] File doesn't  seems to exist" + colors.RESET)
+
 def main():
     for root, dirs, files in os.walk("fichier"):
         for name in files:
@@ -58,30 +69,20 @@ def main():
 
             key =  b'diidju'
 
-            #read file to decrypt
-            try:
-                with open(cipher_file, 'rb') as encrypt:
-                    cipher_text = encrypt.read()
-                    text = xor(cipher_text, key)
-                    text = text.decode(encoding="ansi")
-
-            except:
-                print(colors.FAIL + "[-] File doesn't  seems to exist" + colors.RESET)
+            decipher_text = tryDecrypt(cipher_file)
 
             print(colors.OKBLUE+ "[+] file " + name + " tried" + colors.RESET)
 
-            if verifDico(text):
+            if verifDico(decipher_text):
                 print(colors.OKGREEN+"[+] The key is: ' "+ key.decode() + " '" + colors.RESET)
 
                 try:
                     with open(decode_file, 'wb') as decrypt:
-                        decrypt.write(text.encode(encoding="ansi"))
+                        decrypt.write(decipher_text.encode(encoding="ansi"))
                         print(colors.OKGREEN+"[+] Text "+ name +" decrypt "+ colors.RESET)
                         decrypt.close()
                 except:
                     print(colors.FAIL + "[-] Fail to right decoded file" + colors.RESET)
-
-            encrypt.close()
 
 if __name__ == "__main__":
     main()
