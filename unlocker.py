@@ -50,7 +50,7 @@ def verifDico(text_decrypt):
     dico.close()
     return False
 
-def tryDecrypt(cipher_file, key = b'diidju'):
+def tryDecrypt(name, cipher_file, key = b'diidju'):
     try:
         with open(cipher_file, 'rb') as encrypt:
             cipher_text = encrypt.read()
@@ -62,7 +62,7 @@ def tryDecrypt(cipher_file, key = b'diidju'):
 
             if verifDico(text):
                 print(colors.OKGREEN+"[+] The key is: ' "+ key.decode() + " '" + colors.RESET)
-                writeDecipher(cipher_file,text)
+                writeDecipher(name, text)
     except:
         print(colors.FAIL + "[-] File doesn't  seems to exist" + colors.RESET)
 
@@ -81,7 +81,7 @@ def main():
         for name in files:
             cipher_file = os.path.join(root, name)
 
-            decipher_text = tryDecrypt(cipher_file)
+            decipher_text = tryDecrypt(name, cipher_file)
 
 if __name__ == "__main__":
     main()
