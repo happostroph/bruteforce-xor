@@ -53,14 +53,18 @@ def verifDico(text_decrypt):
 def main():
     for root, dirs, files in os.walk("fichier"):
         for name in files:
-            file_crypt = os.path.join(root, name)
+            cipher_file = os.path.join(root, name)
             decode_file = "decode/decode_"+ name
 
             key =  b'diidju'
 
+            #read file to decrypt
             try:
-                with open(file_crypt, 'rb') as encrypt:
-                    text = (xor(encrypt.read(),key)).decode(encoding="ansi")
+                with open(cipher_file, 'rb') as encrypt:
+                    cipher_text = encrypt.read()
+                    text = xor(cipher_text, key)
+                    text = text.decode(encoding="ansi")
+
             except:
                 print(colors.FAIL + "[-] File doesn't  seems to exist" + colors.RESET)
 
