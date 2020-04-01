@@ -57,32 +57,31 @@ def tryDecrypt(cipher_file, key = b'diidju'):
             text = xor(cipher_text, key)
             text = text.decode(encoding="ansi")
             encrypt.close()
-            return text
+
+            print(colors.OKBLUE+ "[+] file " + cipher_file + " tried" + colors.RESET)
+
+            if verifDico(text):
+                print(colors.OKGREEN+"[+] The key is: ' "+ key.decode() + " '" + colors.RESET)
+                writeDecipher(cipher_file,text)
     except:
         print(colors.FAIL + "[-] File doesn't  seems to exist" + colors.RESET)
+
+def writeDecipher(name, decipher_text):
+    file_to_write = "decode/decode_"+ name
+    try:
+        with open(file_to_write, 'wb') as decrypt:
+            decrypt.write(decipher_text.encode(encoding="ansi"))
+            print(colors.OKGREEN+"[+] Text "+ name +" decrypt "+ colors.RESET)
+            decrypt.close()
+    except:
+        print(colors.FAIL + "[-] Fail to right decoded file" + colors.RESET)
 
 def main():
     for root, dirs, files in os.walk("fichier"):
         for name in files:
             cipher_file = os.path.join(root, name)
-            decode_file = "decode/decode_"+ name
-
-            key =  b'diidju'
 
             decipher_text = tryDecrypt(cipher_file)
-
-            print(colors.OKBLUE+ "[+] file " + name + " tried" + colors.RESET)
-
-            if verifDico(decipher_text):
-                print(colors.OKGREEN+"[+] The key is: ' "+ key.decode() + " '" + colors.RESET)
-
-                try:
-                    with open(decode_file, 'wb') as decrypt:
-                        decrypt.write(decipher_text.encode(encoding="ansi"))
-                        print(colors.OKGREEN+"[+] Text "+ name +" decrypt "+ colors.RESET)
-                        decrypt.close()
-                except:
-                    print(colors.FAIL + "[-] Fail to right decoded file" + colors.RESET)
 
 if __name__ == "__main__":
     main()
