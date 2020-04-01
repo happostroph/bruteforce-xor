@@ -2,6 +2,7 @@ import itertools
 import string
 import os
 import re
+import time
 
 class colors:
     HEADER = '\033[95m'
@@ -18,13 +19,14 @@ class colors:
 def xor(data, key):
     return bytes(a ^ b for a, b in zip(data, itertools.cycle(key)))
 
-def genkey():
+def findkey(name,cipher_file):
     chars = string.ascii_lowercase # abcdefghijklmnopqrstuvwxyz
     for item in itertools.product(chars, repeat=6):
-        print( "".join(item))
-
-#def findWord(w, t):
-    #return re.compile(r'\b({0})\b'.format(w), flags=re.IGNORECASE).search
+        key = "".join(item)
+        print(key)
+        if tryDecrypt(name,cipher_file,bytes(key, encoding="ansi")):
+            return key
+    return None
 
 def verifDico(text_decrypt):
     wcount = 0
@@ -40,7 +42,7 @@ def verifDico(text_decrypt):
             if reg.search(text_decrypt):
                 print(colors.OKGREEN+"[+] Word found: "+ word + colors.RESET)
                 wcount += 1
-                if wcount == 10:
+                if wcount == 4:
                     dico.close()
                     print(colors.OKGREEN+ "[+] Key found" + colors.RESET)
                     dico.close()
@@ -49,8 +51,8 @@ def verifDico(text_decrypt):
     print(colors.WARNING+ "[?] Not enought word found :"+ str(wcount) + " ,change the file to test " + colors.RESET)
     dico.close()
     return False
-
-def tryDecrypt(name, cipher_file, key = b'diidju'):
+#
+def tryDecrypt(name, cipher_file, key):
     try:
         with open(cipher_file, 'rb') as encrypt:
             cipher_text = encrypt.read()
@@ -63,9 +65,14 @@ def tryDecrypt(name, cipher_file, key = b'diidju'):
             if verifDico(text):
                 print(colors.OKGREEN+"[+] The key is: ' "+ key.decode() + " '" + colors.RESET)
                 writeDecipher(name, text)
-    except:
+                return True
+
+            return False
+    except NameError as error:
+        print(error)
         print(colors.FAIL + "[-] File doesn't  seems to exist" + colors.RESET)
 
+#Write in file the decrypt text
 def writeDecipher(name, decipher_text):
     file_to_write = "decode/decode_"+ name
     try:
@@ -80,8 +87,12 @@ def main():
     for root, dirs, files in os.walk("fichier"):
         for name in files:
             cipher_file = os.path.join(root, name)
-
-            decipher_text = tryDecrypt(name, cipher_file)
+            key = findkey(name, cipher_file)
+            if key != None:
+                tryDecrypt(name,cipher_file, key)
+                break
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    print("--- %s seconds ---" % (time.time() - start_time))
