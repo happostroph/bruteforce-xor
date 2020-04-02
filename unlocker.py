@@ -31,7 +31,7 @@ def findkey(name,cipher_file):
         if(i%100000 == 0):
             print(key)
             print("--- %s seconds ---" % (time.time() - start_time))
-        if tryDecrypt(name,cipher_file,bytes(key, encoding="ansi")):
+        if tryDecrypt(name,cipher_file,bytes(key, encoding="ansi"),100):
             return bytes(key, encoding="ansi")
     return None
 
@@ -91,9 +91,9 @@ def readFile(cipher_file,key,nb_chars=0):
         print(error)
         print(colors.FAIL + "[-] File doesn't  seems to exist" + colors.RESET)
 
-def tryDecrypt(name, cipher_file, key):
+def tryDecrypt(name, cipher_file, key, nb_chars=0):
 
-    text = readFile(cipher_file, key,100)
+    text = readFile(cipher_file, key,nb_chars)
     if isFrench(text, name):
         print(colors.OKGREEN+"[+] The key is: ' "+ key.decode() + " '" + colors.RESET)
         writeDecipher(name, text)
