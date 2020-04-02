@@ -28,6 +28,18 @@ def findkey(name,cipher_file):
             return key
     return None
 
+def hasNonPrintable():
+    return True
+
+def isFrench(text_decrypt):
+    if not verifDico(text_decrypt):
+        print(colors.WARNING+ "[?] "+ text_decrypt.name + " doesn't look french " + colors.RESET)
+        return False
+    if hasNonPrintable():
+        return False
+
+    return True
+
 def verifDico(text_decrypt):
     wcount = 0
     try:
@@ -51,26 +63,34 @@ def verifDico(text_decrypt):
     print(colors.WARNING+ "[?] Not enought word found :"+ str(wcount) + " ,change the file to test " + colors.RESET)
     dico.close()
     return False
-#
-def tryDecrypt(name, cipher_file, key):
+
+def readFile(cipher_file,key,nb_chars=0):
     try:
         with open(cipher_file, 'rb') as encrypt:
-            cipher_text = encrypt.read()
+            if nb_chars != 0:
+                cipher_text = encrypt.read(nb_chars)
+            else:
+                cipher_text = encrypt.read()
             text = xor(cipher_text, key)
             text = text.decode(encoding="ansi")
             encrypt.close()
-
-            print(colors.OKBLUE+ "[+] file " + cipher_file + " tried" + colors.RESET)
-
-            if verifDico(text):
-                print(colors.OKGREEN+"[+] The key is: ' "+ key.decode() + " '" + colors.RESET)
-                writeDecipher(name, text)
-                return True
-
-            return False
+            return text
     except NameError as error:
         print(error)
         print(colors.FAIL + "[-] File doesn't  seems to exist" + colors.RESET)
+
+def tryDecrypt(name, cipher_file, key):
+
+    text = readFile(cipher_file, key,100)
+    print(colors.OKBLUE+ "[+] file " + cipher_file + " tried" + colors.RESET)
+
+    if verifDico(text):
+        print(colors.OKGREEN+"[+] The key is: ' "+ key.decode() + " '" + colors.RESET)
+        writeDecipher(name, text)
+        return True
+
+    return False
+
 
 #Write in file the decrypt text
 def writeDecipher(name, decipher_text):
