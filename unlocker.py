@@ -15,29 +15,35 @@ class colors:
     UNDERLINE = '\033[4m'
     RESET = '\033[0;0m'
 
+printable = '0123456789abcdefghijklmnopqrstuvwxyzàáâäãåæçéèêëíìîïñóòôöõœúùûüABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÄÃÅÆÇÉÈÊËÍÌÎÏÑÓÒÔÖÕŒÚÙÛÜ!"#$%&\'()*+,-./:;?@[\\]^_`{|}~ \t\n\r\x0b\x0c'
+
 # xor fonction
 def xor(data, key):
     return bytes(a ^ b for a, b in zip(data, itertools.cycle(key)))
 
 def findkey(name,cipher_file):
     chars = string.ascii_lowercase # abcdefghijklmnopqrstuvwxyz
+    i = 0
     for item in itertools.product(chars, repeat=6):
+        i += 1
         key = "".join(item)
-        print(key)
+        if(i%10000 == 0):
+            print(key)
         if tryDecrypt(name,cipher_file,bytes(key, encoding="ansi")):
             return key
     return None
 
-def hasNonPrintable():
-    return True
+def hasNonPrintable(text_decrypt):
+    for char in text_decrypt:
+        if char not in printable:
+            return True
+    return False
 
-def isFrench(text_decrypt):
+def isFrench(text_decrypt, name):
+    if hasNonPrintable(text_decrypt):
+        return False
     if not verifDico(text_decrypt):
-        print(colors.WARNING+ "[?] "+ text_decrypt.name + " doesn't look french " + colors.RESET)
         return False
-    if hasNonPrintable():
-        return False
-
     return True
 
 def verifDico(text_decrypt):
@@ -52,15 +58,12 @@ def verifDico(text_decrypt):
         reg = re.compile(r'\b' + re.escape(word) + r'\b', flags=re.IGNORECASE)
         if len(word) > 3:
             if reg.search(text_decrypt):
-                print(colors.OKGREEN+"[+] Word found: "+ word + colors.RESET)
                 wcount += 1
                 if wcount == 4:
                     dico.close()
                     print(colors.OKGREEN+ "[+] Key found" + colors.RESET)
                     dico.close()
                     return True
-     
-    print(colors.WARNING+ "[?] Not enought word found :"+ str(wcount) + " ,change the file to test " + colors.RESET)
     dico.close()
     return False
 
@@ -82,9 +85,7 @@ def readFile(cipher_file,key,nb_chars=0):
 def tryDecrypt(name, cipher_file, key):
 
     text = readFile(cipher_file, key,100)
-    print(colors.OKBLUE+ "[+] file " + cipher_file + " tried" + colors.RESET)
-
-    if verifDico(text):
+    if isFrench(text, name):
         print(colors.OKGREEN+"[+] The key is: ' "+ key.decode() + " '" + colors.RESET)
         writeDecipher(name, text)
         return True
