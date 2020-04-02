@@ -24,14 +24,21 @@ def xor(data, key):
 def findkey(name,cipher_file):
     chars = string.ascii_lowercase # abcdefghijklmnopqrstuvwxyz
     i = 0
+    start_time = time.time()
     for item in itertools.product(chars, repeat=6):
         i += 1
         key = "".join(item)
-        if(i%10000 == 0):
+        if(i%100000 == 0):
             print(key)
+            print("--- %s seconds ---" % (time.time() - start_time))
         if tryDecrypt(name,cipher_file,bytes(key, encoding="ansi")):
-            return key
+            return bytes(key, encoding="ansi")
     return None
+
+def hasPercent(text_decrypt):
+    nbr_e=text_decrypt.count('e')
+    if nbr_e >12:
+        return True
 
 def hasNonPrintable(text_decrypt):
     for char in text_decrypt:
@@ -42,6 +49,8 @@ def hasNonPrintable(text_decrypt):
 def isFrench(text_decrypt, name):
     if hasNonPrintable(text_decrypt):
         return False
+    if not hasPercent(text_decrypt):
+        return False
     if not verifDico(text_decrypt):
         return False
     return True
@@ -49,7 +58,7 @@ def isFrench(text_decrypt, name):
 def verifDico(text_decrypt):
     wcount = 0
     try:
-        with open("liste_francais.txt", "r") as dico:
+        with open("dico.txt", "r") as dico:
             words = [line.rstrip() for line in dico]
     except:
         print(colors.FAIL + "[-] Dictionnary doesn't  seems to exist" + colors.RESET)
@@ -114,6 +123,5 @@ def main():
                 break
 
 if __name__ == "__main__":
-    start_time = time.time()
     main()
-    print("--- %s seconds ---" % (time.time() - start_time))
+    
