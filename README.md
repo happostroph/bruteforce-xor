@@ -69,7 +69,7 @@ Le nombre de possibilités de clé contenu entre `aaaaaa` et `zzzzzz` est de : 2
 Ma clé quant à elle se trouve à la position : 4\*26<sup>5</sup>+9\*26<sup>4</sup>+9\*26<sup>3</sup>+4\*26<sup>2</sup>+10\*26<sup>1</sup>+21 = 51799457
 
 #### Première version
-Dans la première version du code j'utilisais le dictionnaire de 23000 mots `liste_francais.txt` pour vérifier à chaque clé si dans mon texte déchiffrer il y avait au moins 10 mots français. Avec cette méthode je résolvais 0.5 clé à la minute soit pour trouver ma clé il me fallait : 103598914 minutes, soit un peu plus de 197 ans.
+Dans la première version du code j'utilisais le dictionnaire de 23000 mots `liste_francais.txt` pour vérifier à chaque clé si dans mon texte déchiffré il y avait au moins 10 mots français. Avec cette méthode je résolvais 0.5 clé à la minute soit pour trouver ma clé il me fallait : 103598914 minutes, soit un peu plus de 197 ans.
 Les points qui étaient à améliorer dessus étaient de ne pas utiliser un dictionnaire de 23000 mots car beaucoup trop long à parcourir. De plus il fallait trouver d'autre méthode pour réduire au maximum le nombre de requête au dictionnaire.
 
 #### Deuxième version du code
@@ -93,7 +93,7 @@ Voici un diagramme représentant la partie analyse du brute force :
 <img src="images/bruteforce-xor.png" width="200">
 
 ### Résultats
-Avec cette deuxième méthode, j'ai considérablement augmenté les performances de l'algorithme. L'algorithme effectue 100000 essais de clé toute les 11 secondes environ ce qui fait environ 545454 clé par minutes soit pour trouver la clé `diidju` 1h 30min 48sec et 9h 25min 48sec pour effectuer les 308915776 possibilités.
+Avec cette deuxième méthode, j'ai considérablement augmenté les performances de l'algorithme. L'algorithme effectue 100000 essais de clés toutes les 11 secondes environ ce qui fait environ 545454 clés par minutes soit pour trouver la clé `diidju` 1h 30min 48sec et 9h 25min 48sec pour effectuer les 308915776 possibilités.
 Cet ordre de grandeur reste viable dans la limite du projet car ce qui était demandé est de déchiffrer en moins d'une semaine les fichiers et trouver le message.
 
 En réalité, après exécution du code nous trouvons la clé en 4450 secondes soit 1h 14 min et 24sec car j'ai effectué mes statistiques sur les 100000 premières clés qui ne représentent pas un ensemble assez grand pour calculer avec précision de le temps nécessaire au déchiffrement.
