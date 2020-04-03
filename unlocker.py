@@ -101,6 +101,9 @@ def tryDecrypt(name, cipher_file, key, nb_chars=0):
 
     return False
 
+def decrypt(name, cipher_file, key):
+    text = readFile(cipher_file, key)
+    writeDecipher(name, text)
 
 #Write in file the decrypt text
 def writeDecipher(name, decipher_text):
@@ -114,13 +117,18 @@ def writeDecipher(name, decipher_text):
         print(colors.FAIL + "[-] Fail to right decoded file" + colors.RESET)
 
 def main():
+    key_found = False
     for root, dirs, files in os.walk("fichier"):
         for name in files:
             cipher_file = os.path.join(root, name)
-            key = findkey(name, cipher_file)
+            if not key_found:
+                key = findkey(name, cipher_file)
+                if key != None:
+                    key_found = True
+                    continue
+
             if key != None:
-                tryDecrypt(name,cipher_file, key)
-                break
+                decrypt(name,cipher_file, key)
 
 if __name__ == "__main__":
     main()
